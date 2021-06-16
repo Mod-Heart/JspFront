@@ -1,12 +1,12 @@
 <template>
   <div>
     <h2>订单列表</h2>
-  <el-table :data="orderTable" style="width: 100%" stripe :row-class-name="tabRowClassName">
+  <el-table :data="orderTable" style="width: 100%" stripe>
     <el-table-column type="expand">
       <template slot-scope="scope">
         <el-form label-position="left" inline class="demo-table-expand">
           <el-form-item label="订单商品">
-            <span>{{ scope.row.productPackages[index] }}</span>
+            <span>{{ scope.row.productPackages[0].product.name }}</span>
           </el-form-item>
         </el-form>
       </template>
@@ -68,7 +68,6 @@ export default {
     return{
       orderTable:[],
       userType: '',
-      productList: [],
       guestReceive : { guest: true, store: false, deliver: false, admin: false },
       orderEdit: { guest: false, store: false, deliver: false, admin: true },
       orderBack: { guest: false, store: false, deliver: false, admin: true },
@@ -85,29 +84,9 @@ export default {
   },
 
   methods: {
-    /*saveProductList(index){
-      let i;
-      for(i=0;i<this.orderTable[index].productPackages.length;i++){
-        this.productList.push(this.orderTable[index].productPackages[i]);
-      }
-      console.log(this.productList);
-    },*/
 
-    handleEdit(index, row) {
-      console.log(index, row);
-    },
 
-    handleDelete(index, row) {
-      this.tableData.splice(index,1)
-    },
 
-    tabRowClassName({row,rowIndex }) {
-      if (rowIndex % 2 === 0) {
-        return "warning-row";
-      } else {
-        return "";
-      }
-    },
 
     ifShow(buttonType){
       this.userType=this.$store.state.type;
