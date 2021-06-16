@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     name: '',
-    type: ''
+    type: '',
+    id: ''
   },
 
   mutations: {
@@ -16,6 +17,9 @@ export default new Vuex.Store({
     settype(state,step){
       this.state.type=step;
     },
+    setid(state,step){
+      this.state.id=step;
+    }
   },
 
   actions: {

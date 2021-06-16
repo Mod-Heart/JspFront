@@ -41,9 +41,9 @@ export default {
     data() {
       return {
         loginForm: {
-          type: '',
-          name: '',
-          password: ''
+          type: 'guest',
+          name: 'userforguest',
+          password: '2022337'
         },
         err: '',
         dialogVisible: false
@@ -64,12 +64,13 @@ export default {
           url:'http://localhost:8081/user/login/'+this.loginForm.type+ '/'+this.loginForm.name+'/'+this.loginForm.password,
           headers: header
         }).then((response)=>{
-            console.log(response);
+          console.log(response);
             if (response.data.code===0){
               localStorage.setItem('tokenName',response.data.data.tokenName);  /*将后端发送过来的tokenName存储到本地*/
               localStorage.setItem('tokenValue',response.data.data.tokenValue);  /*将后端发送过来的tokenValue存储到本地*/
+              this.$store.commit('setid',response.data.data.targetId) /*将state中id更改为登录用户id*/
               this.$store.commit('setname',this.loginForm.name)    /*将state中name更改为登录用户名*/
-              this.$store.commit('settype',this.loginForm.type)    /*将state中type更改为登录用户名*/
+              this.$store.commit('settype',this.loginForm.type)    /*将state中type更改为登录用户类型*/
               this.$router.push("/main");
               this.logsuccess();
             }
@@ -117,7 +118,6 @@ export default {
 
 <style scoped>
 .login-box {
-  border: 1px solid #DCDFE6;
   width: 380px;
   margin-left: 600px;
   margin-top: 100px;

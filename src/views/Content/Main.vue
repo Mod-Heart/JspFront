@@ -1,13 +1,13 @@
 <template>
 <div>
-  <el-container style="height: 100%; border: 1px solid #eee">
+  <el-container style="height: 100%;">
     <el-aside width="200px">
       <el-menu router>
         <div class="usernameBG"><span class="usernamePos">{{ this.$store.state.name }}</span></div>
         <el-menu-item index="OrderList"><em class="el-icon-tickets"></em>订单列表</el-menu-item>
-        <el-menu-item index="Abnormal"><em class="el-icon-question"></em>异常报告</el-menu-item>
         <el-submenu index="1">
           <template slot="title"><em class="el-icon-mobile"></em>我的</template>
+          <el-menu-item index="Abnormal" v-show="this.$store.state.type!='admin'"><em class="el-icon-question"></em>异常报告</el-menu-item>
           <el-menu-item index="ReGuestMsg" v-show="this.$store.state.type==='guest'"><em class="el-icon-edit-outline"></em>更新信息</el-menu-item>
           <el-menu-item index="CreateNewOrder" v-show="this.$store.state.type==='guest'||this.$store.state.type==='admin'"><em class="el-icon-shopping-bag-1"></em>创建订单</el-menu-item>
           <el-menu-item index="ReStoreMsg" v-show="this.$store.state.type==='store'"><em class="el-icon-edit-outline"></em>更新信息</el-menu-item>
