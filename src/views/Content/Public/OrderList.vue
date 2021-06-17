@@ -6,7 +6,16 @@
       <template slot-scope="scope">
         <el-form label-position="left" inline class="demo-table-expand">
           <el-form-item label="订单商品">
-            <span>{{ scope.row.productPackages[0].product.name }}</span>
+            <span v-for="(item,index) in scope.row.productPackages">{{ item.product.name }}————{{ item.num }}份</span>
+          </el-form-item>
+          <el-form-item label="顾客电话">
+            <span>{{ scope.row.guest.telephone }}</span>
+          </el-form-item>
+          <el-form-item label="商家电话">
+            <span>{{ scope.row.store.telephone }}</span>
+          </el-form-item>
+          <el-form-item label="下单时间">
+            <span>{{ scope.row.time }}</span>
           </el-form-item>
         </el-form>
       </template>
