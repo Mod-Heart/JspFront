@@ -6,7 +6,7 @@
       <template slot-scope="scope">
         <el-form label-position="left" inline class="demo-table-expand">
           <el-form-item label="订单商品">
-            <span v-for="(item,index) in scope.row.productPackages">{{ item.product.name }}————{{ item.num }}份</span>
+            <span v-for="(item,index) in scope.row.productPackages">{{ item.product.name }}——{{ item.num }}份</span>
           </el-form-item>
           <el-form-item label="顾客电话">
             <span>{{ scope.row.guest.telephone }}</span>
@@ -31,17 +31,17 @@
         <span style="margin-left: 10px">{{ scope.row.message }}</span>
       </template>
     </el-table-column>
-    <el-table-column label="下单时间" width="300px">
+    <el-table-column label="下单时间" width="260px">
       <template slot-scope="scope">
         <span style="margin-left: 10px">{{ scope.row.time }}</span>
       </template>
     </el-table-column>
-    <el-table-column label="骑手名" width="130px">
+    <el-table-column label="骑手名" width="150px">
       <template slot-scope="scope">
-        <span style="margin-left: 10px">{{ scope.row.o_d_name }}</span>
+        <span style="margin-left: 10px">{{ hasDeliver(scope.$index) }}</span>
       </template>
     </el-table-column>
-    <el-table-column label="商家名" width="130px">
+    <el-table-column label="商家名" width="120px">
       <template slot-scope="scope">
         <span style="margin-left: 10px">{{ scope.row.store.name }}</span>
       </template>
@@ -51,19 +51,19 @@
         <span style="margin-left: 10px">{{ scope.row.guest.name}}</span>
       </template>
     </el-table-column>
-    <el-table-column label="收货地址" width="200px">
+    <el-table-column label="收货地址" width="100px">
       <template slot-scope="scope">
         <span style="margin-left: 10px">{{ scope.row.address.addressString }}</span>
       </template>
     </el-table-column>
     <el-table-column label="操作">
       <template slot-scope="scope">
-        <el-button size="mini" id="guestReceive" v-if=ifShow(guestReceive) @click="GuestReceiveForm()">确认收货</el-button>
+        <el-button size="mini" id="guestReceive" v-if=ifShow(guestReceive) @click="GuestReceiveForm(scope.$index)">确认收货</el-button>
         <el-button size="mini" id="orderBack" v-if=ifShow(orderBack) @click="orderBackForm()">回滚</el-button>
-        <el-button size="mini" id="storeReceive" v-if=ifShow(storeReceive) @click="storeReceiveForm()">接单</el-button>
-        <el-button size="mini" id="deliverReceive" v-if=ifShow(deliverReceive) @click="deliverReceiveForm()">接单</el-button>
-        <el-button size="mini" id="orderEdit" v-if=ifShow(orderEdit) @click="orderEditForm()">编辑</el-button>
-        <el-button size="mini" id="orderDelete" v-if=ifShow(orderEdit) type="danger" @click="orderDeleteForm()">删除</el-button>
+        <el-button size="mini" id="storeReceive" v-if="ifShow(storeReceive)" @click="storeReceiveForm()">接单</el-button>
+        <el-button size="mini" id="deliverReceive" v-if=ifShow(deliverReceive) @click="deliverReceiveForm(scope.$index)">接单</el-button>
+        <el-button size="mini" id="orderEdit" v-if=ifShow(orderEdit) @click="orderEditForm(scope.$index)">编辑</el-button>
+        <el-button size="mini" id="orderDelete" v-if=ifShow(orderEdit) type="danger" @click="orderDeleteForm(scope.$index)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -77,6 +77,9 @@ export default {
     return{
       orderTable:[],
       userType: '',
+      d_id: '',
+      d_name: [],
+      aStatus: true,
       guestReceive : { guest: true, store: false, deliver: false, admin: false },
       orderEdit: { guest: false, store: false, deliver: false, admin: true },
       orderBack: { guest: false, store: false, deliver: false, admin: true },
@@ -93,9 +96,9 @@ export default {
   },
 
   methods: {
-
-
-
+    Nor(){
+      this.aStatus=!this.aStatus;
+    },
 
     ifShow(buttonType){
       this.userType=this.$store.state.type;
@@ -117,17 +120,40 @@ export default {
         headers: header,
       }).then((response)=>{
         console.log(response);
-        let i;
-        for(i=0;i<response.data.data.orderList.length;i++){
-          this.orderTable.push(response.data.data.orderList[i]);
-        }
+          this.orderTable=response.data.data.orderList;
       })
         .catch((error)=>{
           console.log(error);   /*抓错*/
         });
     },
 
-    OrderListForm(){
+
+
+    GuestReceiveForm(index){
+      const tokenName = localStorage.getItem('tokenName');  /*从本地存储中取出tokenName的值*/
+      const tokenValue = localStorage.getItem('tokenValue'); /*从本地存储中取出tokenValue的值*/
+      const header = {
+        "content-type": "application/x-www-form-urlencoded"
+      };
+      if(tokenName !== undefined && tokenName !== ''){
+        header[tokenName] = tokenValue
+      }
+      this.o_id=this.orderTable[index].id
+      this.axios({
+        method: 'get',
+        url:'http://localhost:8081/guest/take/'+this.o_id,
+        headers: header,
+      }).then((response)=>{
+        console.log(response);
+        this.OrderShowForm;
+        this.orderTable.splice(index,1);
+      })
+        .catch((error)=>{
+          console.log(error);   /*抓错*/
+        });
+    },
+
+    orderEditForm(index){
       const tokenName = localStorage.getItem('tokenName');  /*从本地存储中取出tokenName的值*/
       const tokenValue = localStorage.getItem('tokenValue'); /*从本地存储中取出tokenValue的值*/
       const header = {
@@ -138,18 +164,17 @@ export default {
       }
       this.axios({
         method: 'get',
-        url:'http://localhost:8081/take/'+this.o_id,
+        url:'http://localhost:8081/order/edit/'+this.orderTable[index].id+'/'+this.d_id+'/'+this.s_id+'/'+this.g_id+'/'+this.a_id,
         headers: header,
       }).then((response)=>{
         console.log(response);
-
       })
         .catch((error)=>{
           console.log(error);   /*抓错*/
         });
     },
 
-    GuestReceiveForm(){
+    orderDeleteForm(index){
       const tokenName = localStorage.getItem('tokenName');  /*从本地存储中取出tokenName的值*/
       const tokenValue = localStorage.getItem('tokenValue'); /*从本地存储中取出tokenValue的值*/
       const header = {
@@ -160,53 +185,11 @@ export default {
       }
       this.axios({
         method: 'get',
-        url:'http://localhost:8081/take/'+this.o_id,
+        url:'http://localhost:8081/order/delete/'+this.orderTable[index].id,
         headers: header,
       }).then((response)=>{
         console.log(response);
-
-      })
-        .catch((error)=>{
-          console.log(error);   /*抓错*/
-        });
-    },
-
-    orderEditForm(){
-      const tokenName = localStorage.getItem('tokenName');  /*从本地存储中取出tokenName的值*/
-      const tokenValue = localStorage.getItem('tokenValue'); /*从本地存储中取出tokenValue的值*/
-      const header = {
-        "content-type": "application/x-www-form-urlencoded"
-      };
-      if(tokenName !== undefined && tokenName !== ''){
-        header[tokenName] = tokenValue
-      }
-      this.axios({
-        method: 'get',
-        url:'http://localhost:8081/user/edit/'+this.o_id+'/'+this.d_id+'/'+this.s_id+'/'+this.g_id+'/'+this.a_id,
-        headers: header,
-      }).then((response)=>{
-        console.log(response);
-      })
-        .catch((error)=>{
-          console.log(error);   /*抓错*/
-        });
-    },
-
-    orderDeleteForm(){
-      const tokenName = localStorage.getItem('tokenName');  /*从本地存储中取出tokenName的值*/
-      const tokenValue = localStorage.getItem('tokenValue'); /*从本地存储中取出tokenValue的值*/
-      const header = {
-        "content-type": "application/x-www-form-urlencoded"
-      };
-      if(tokenName !== undefined && tokenName !== ''){
-        header[tokenName] = tokenValue
-      }
-      this.axios({
-        method: 'get',
-        url:'http://localhost:8081/user/delete/'+this.o_id,
-        headers: header,
-      }).then((response)=>{
-        console.log(response);
+        this.OrderShowForm();
       })
         .catch((error)=>{
           console.log(error);   /*抓错*/
@@ -254,8 +237,15 @@ export default {
           console.log(error);   /*抓错*/
         });
     },
+    hasDeliver(index){
+      if(this.orderTable[index].deliver!==undefined){
+        return this.orderTable[index].deliver.name;
+      }else {
+        return '尚无人接单';
+      }
+    },
 
-    deliverReceiveForm(){
+    deliverReceiveForm(index){
       const tokenName = localStorage.getItem('tokenName');  /*从本地存储中取出tokenName的值*/
       const tokenValue = localStorage.getItem('tokenValue'); /*从本地存储中取出tokenValue的值*/
       const header = {
@@ -264,12 +254,16 @@ export default {
       if(tokenName !== undefined && tokenName !== ''){
         header[tokenName] = tokenValue
       }
+      this.d_id=this.$store.state.id;
       this.axios({
         method: 'get',
-        url:'',
+        url:'http://localhost:8081/deliver/take/'+this.orderTable[index].id+'/'+this.d_id,
         headers: header,
       }).then((response)=>{
         console.log(response);
+        this.d_name.push(response.data.data.order.deliver.name);
+        this.OrderShowForm;
+        console.log(this.d_name);
       })
         .catch((error)=>{
           console.log(error);   /*抓错*/

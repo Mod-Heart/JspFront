@@ -17,11 +17,6 @@
           <span>{{scope.row.price}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="商家名">
-        <template slot-scope="scope">
-          <span>{{scope.row.store.name}}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -95,10 +90,8 @@ export default {
       }).then((response)=>{
         console.log(response);
         if(response.data.code===0){
-          let i;
-          for(i=0;i<response.data.data.productList.length;i++){
-            this.ProductTable.push(response.data.data.productList[i]);
-          }
+          this.ProductTable=response.data.data.productList;
+          console.log(this.ProductTable);
         }
       })
         .catch((error)=>{

@@ -9,14 +9,40 @@
       <div class="material-item">
         <span class="attribute">骑手名:</span>
         <span class="value">{{ d_name }}</span>
-        <el-button type="info" @click="NameEdit">编辑</el-button>
+        <el-button type="info" @click="DialogVisibleName=true">编辑</el-button>
       </div>
       <div class="material-item">
         <span class="attribute">联系方式:</span>
         <span class="value">{{ d_tel }}</span>
-        <el-button type="info" @click="TelEdit">编辑</el-button>
+        <el-button type="info">编辑</el-button>
       </div>
     </div>
+    <el-dialog title="修改姓名" :visible.sync="dialogVisibleName" width="30%" :before-close="handleClose">
+      <el-form>
+        <el-form-item>
+          <el-form-item label="姓名">
+            <el-input type="text" v-model="newName" style="width: 200px" placeholder="请输入新姓名"></el-input>
+          </el-form-item>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisibleName = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisibleName = false;NameEdit()">确 定</el-button>
+        </span>
+    </el-dialog>
+    <el-dialog title="修改电话" :visible.sync="dialogVisibleTel" width="30%" :before-close="handleClose">
+      <el-form>
+        <el-form-item>
+          <el-form-item label="电话">
+            <el-input type="text" v-model="newTel" style="width: 200px" placeholder="请输入新电话"></el-input>
+          </el-form-item>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisibleTel = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisibleTel = false;TelEdit()">确 定</el-button>
+        </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -29,6 +55,10 @@ export default {
       d_id: '',
       d_name: '',
       d_tel: '',
+      newName: '',
+      newTel: '',
+      DialogVisibleName: false,
+      DialogVisibleTel: false
     }
   },
 
@@ -41,13 +71,21 @@ export default {
 
   methods:{
     NameEdit(){
-      this.d_name+='a';
+      this.d_name=this.newName;
       this.DeliverMsgEditForm();
     },
 
     TelEdit(){
-      this.d_tel+='a';
+      this.d_tel=this.newTel;
       this.DeliverMsgEditForm();
+    },
+
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
     },
 
     EditSuccess(){

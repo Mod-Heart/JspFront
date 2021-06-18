@@ -9,12 +9,12 @@
       <div class="material-item">
         <span class="attribute">顾客姓名:</span>
         <span class="value">{{ g_name }}</span>
-        <el-button type="info" @click="NameEdit()" plain>编辑</el-button>
+        <el-button type="info" @click="dialogVisibleName = true" plain>编辑</el-button>
       </div>
       <div class="material-item">
         <span class="attribute">联系方式:</span>
         <span class="value">{{ g_tel }}</span>
-        <el-button type="info" @click="TelEdit()" plain>编辑</el-button>
+        <el-button type="info" @click="dialogVisibleTel = true" plain>编辑</el-button>
       </div>
       <div class="material-item">
         <span class="attribute">地址:</span>
@@ -39,6 +39,32 @@
           <el-button type="primary" @click="dialogVisible = false;AddAddress()">确 定</el-button>
         </span>
       </el-dialog>
+      <el-dialog title="修改姓名" :visible.sync="dialogVisibleName" width="30%" :before-close="handleClose">
+        <el-form>
+          <el-form-item>
+            <el-form-item label="姓名">
+              <el-input type="text" v-model="newName" style="width: 200px" placeholder="请输入新姓名"></el-input>
+            </el-form-item>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisibleName = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisibleName = false;NameEdit()">确 定</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog title="修改电话" :visible.sync="dialogVisibleTel" width="30%" :before-close="handleClose">
+        <el-form>
+          <el-form-item>
+            <el-form-item label="电话">
+              <el-input type="text" v-model="newTel" style="width: 200px" placeholder="请输入新电话"></el-input>
+            </el-form-item>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisibleTel = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisibleTel = false;TelEdit()">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -54,7 +80,11 @@ export default {
       g_tel: '',
       g_address: [],
       newaddress: '',
-      dialogVisible: false
+      newName: '',
+      newTel: '',
+      dialogVisible: false,
+      dialogVisibleName: false,
+      dialogVisibleTel: false
     }
   },
 
@@ -66,12 +96,12 @@ export default {
 
   methods:{
     NameEdit(){
-      this.g_name+='a';
+      this.g_name=this.newName;
       this.GuestMsgEditForm();
     },
 
     TelEdit(){
-      this.g_tel+='a';
+      this.g_tel=this.newTel;
       this.GuestMsgEditForm();
     },
 

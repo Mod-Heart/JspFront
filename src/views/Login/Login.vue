@@ -41,9 +41,9 @@ export default {
     data() {
       return {
         loginForm: {
-          type: 'guest',
-          name: 'userforguest',
-          password: '2022337'
+          type: '',
+          name: '',
+          password: ''
         },
         err: '',
         dialogVisible: false

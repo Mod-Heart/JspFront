@@ -2,7 +2,6 @@
   <div class="text-center" style="position: relative;bottom: 50px">
     <el-form label-width="100px" class="login-box">
       <img class="mb-4" src="../../assets/img/饿了么外卖-圆形.png" alt="" width="50" height="50">
-      <el-button @click="test()">test</el-button>
       <h2 class="login-title">注册</h2>
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" router>
         <el-menu-item index="/GuestRegister">顾客</el-menu-item>
@@ -28,21 +27,7 @@ export default {
     };
   },
   methods: {
-    test(){
-      var i;
-      console.log(this.p);
-      console.log(this.q);
-      for(i=0;i<this.q.length;i++){
-        if(this.q[i]==0){
-          this.p.splice(i,1);
-          this.q.splice(i,1);
-          i=i-1;
-        }else {
-          this.r.push(this.p[i]+'_'+this.q[i])
-        }
-      }
-      console.log(this.r);
-    }
+
   }
 }
 </script>

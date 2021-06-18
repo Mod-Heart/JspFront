@@ -54,7 +54,7 @@ export default {
       }
       this.axios({
         method: 'get',
-        url:'http://localhost:8081/user/enroll/'+this.RegisterForm.username+ '/'+this.RegisterForm.password+'/'
+        url:'http://localhost:8081/deliver/enroll/'+this.RegisterForm.username+ '/'+this.RegisterForm.password+'/'
           +this.RegisterForm.name+'/'+this.RegisterForm.telephone,
         headers: header
       }).then((response)=>{
